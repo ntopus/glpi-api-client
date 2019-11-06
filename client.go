@@ -2,9 +2,12 @@ package glpi_api_client
 
 import (
 	"bytes"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"path"
+	"strconv"
 )
 
 const headerContentType = "Content-Type"
@@ -53,7 +56,7 @@ func (glpiClient *GLPIClient) InitSession() error {
 	return nil
 }
 
-func (glpiClient *GLPIClient) AddTicket(ticket CreateTicket) (int, error) {
+func (glpiClient *GLPIClient) CreateTicket(ticket CreateTicket) (int, error) {
 	json, err := getInputJson(ticket)
 	if err != nil {
 		return 0, err
@@ -66,7 +69,27 @@ func (glpiClient *GLPIClient) AddTicket(ticket CreateTicket) (int, error) {
 	return getCreateTicketResponseID(resp)
 }
 
-func (glpiClient *GLPIClient) GetTickets() ([]ReadTicket, error) {
+func (glpiClient *GLPIClient) UpdateTicket(id int, ticket CreateTicket) error {
+	json, err := getInputJson(ticket)
+	if err != nil {
+		return err
+	}
+	idString := strconv.Itoa(id)
+	urlPath := path.Join(ticketUrlPath, idString)
+	createTicketEndpoint := glpiClient.createEndpoint(urlPath)
+	resp, err := glpiClient.makeAndDoRequest(http.MethodPut, createTicketEndpoint.String(), json)
+	if err != nil {
+		return err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(body))
+	return nil
+}
+
+func (glpiClient *GLPIClient) ReadAllTickets() ([]ReadTicket, error) {
 	readTicketsEndpoint := glpiClient.createEndpoint(ticketUrlPath)
 	resp, err := glpiClient.makeAndDoRequest(http.MethodGet, readTicketsEndpoint.String(), nil)
 	if err != nil {
