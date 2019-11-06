@@ -17,6 +17,9 @@ const authHeaderValue = "Basic Z2xwaTpnbHBp"
 
 const errorUnexpectedResponse = "unexpected response"
 
+const initSessionUrlPath = "initSession"
+const ticketUrlPath = "ticket"
+
 type InputItem struct {
 	Input interface{} `json:"input"`
 }
@@ -37,7 +40,7 @@ func NewGLPIClient(config GlpiClientConfig) *GLPIClient {
 }
 
 func (glpiClient *GLPIClient) InitSession() error {
-	initSessionEndpoint := glpiClient.createEndpoint("initSession")
+	initSessionEndpoint := glpiClient.createEndpoint(initSessionUrlPath)
 	resp, err := glpiClient.makeAndDoRequest(http.MethodGet, initSessionEndpoint.String(), nil)
 	if err != nil {
 		return err
@@ -51,12 +54,12 @@ func (glpiClient *GLPIClient) InitSession() error {
 }
 
 func (glpiClient *GLPIClient) AddTicket(ticket CreateTicket) (int, error) {
-	reader, err := getInputJson(ticket)
+	json, err := getInputJson(ticket)
 	if err != nil {
 		return 0, err
 	}
-	createTicketEndpoint := glpiClient.createEndpoint("ticket")
-	resp, err := glpiClient.makeAndDoRequest(http.MethodPost, createTicketEndpoint.String(), reader)
+	createTicketEndpoint := glpiClient.createEndpoint(ticketUrlPath)
+	resp, err := glpiClient.makeAndDoRequest(http.MethodPost, createTicketEndpoint.String(), json)
 	if err != nil {
 		return 0, err
 	}
@@ -64,7 +67,7 @@ func (glpiClient *GLPIClient) AddTicket(ticket CreateTicket) (int, error) {
 }
 
 func (glpiClient *GLPIClient) GetTickets() ([]ReadTicket, error) {
-	readTicketsEndpoint := glpiClient.createEndpoint("Ticket")
+	readTicketsEndpoint := glpiClient.createEndpoint(ticketUrlPath)
 	resp, err := glpiClient.makeAndDoRequest(http.MethodGet, readTicketsEndpoint.String(), nil)
 	if err != nil {
 		return nil, err
