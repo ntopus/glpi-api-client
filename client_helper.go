@@ -3,6 +3,7 @@ package glpi_api_client
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -12,6 +13,7 @@ func getSessionToken(resp *http.Response) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	fmt.Println(string(body))
 	responseJson := make(map[string]interface{})
 	err = json.Unmarshal(body, &responseJson)
 	if err != nil {
@@ -22,11 +24,6 @@ func getSessionToken(resp *http.Response) (string, error) {
 		return "", errors.New(errorUnexpectedResponse)
 	}
 	return value, nil
-}
-
-func doRequest(req *http.Request) (*http.Response, error) {
-	client := &http.Client{}
-	return client.Do(req)
 }
 
 func getCreateTicketResponseID(resp *http.Response) (int, error) {
@@ -42,7 +39,9 @@ func getCreateTicketResponseID(resp *http.Response) (int, error) {
 	return response.Id, nil
 }
 
-func getReadTickets(resp *http.Response) ([]ReadTicket, error) {
+func getReadAllTickets(resp *http.Response) ([]ReadTicket, error) {
+	fmt.Println(resp.Header.Get("Content-Range"))
+	fmt.Println(resp.Status)
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
@@ -53,6 +52,19 @@ func getReadTickets(resp *http.Response) ([]ReadTicket, error) {
 		return nil, err
 	}
 	return readTickets, nil
+}
+
+func getReadTicket(resp *http.Response) (*ReadTicket, error) {
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	var readTickets ReadTicket
+	err = json.Unmarshal(body, &readTickets)
+	if err != nil {
+		return nil, err
+	}
+	return &readTickets, nil
 }
 
 type CreateTicketResponse struct {

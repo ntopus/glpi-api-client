@@ -13,8 +13,11 @@ func Test_GLPI(t *testing.T) {
 	}
 	glpiClient := NewGLPIClient(GlpiClientConfig{
 		ApiEndpoint: *glpiEndpoint,
-		AppToken:    "1qNmrctAia7ZvFP20wT2GhuFx0o6NskjgjjAW863",
-		AuthUser:    AuthUserClient{},
+		AppToken:    "WIwBdlGma6MbtXZJyBpcrPIF9OSzReAx368aKG1K",
+		AuthUser: AuthUserClient{
+			Username: "glpi",
+			Password: "glpi",
+		},
 	})
 	err = glpiClient.InitSession()
 	if err != nil {
@@ -25,6 +28,7 @@ func Test_GLPI(t *testing.T) {
 		Content:      "Content test ticket.",
 		Status:       1,
 		Urgency:      1,
+		Impact:       1,
 		DisableNotif: true,
 	})
 	if err != nil {
@@ -37,6 +41,22 @@ func Test_GLPI(t *testing.T) {
 	}
 	for _, value := range readTickets {
 		fmt.Println(value)
+	}
+	ticket, err := glpiClient.ReadTicket(1)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(*ticket)
+	err = glpiClient.AddFollowupTicket(1, CreateTicket{
+		Name:         "Test Ticket 2",
+		Content:      "Content test ticket.",
+		Status:       1,
+		Urgency:      1,
+		Impact:       1,
+		DisableNotif: true,
+	})
+	if err != nil {
+		panic(err)
 	}
 }
 

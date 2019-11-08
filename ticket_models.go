@@ -5,6 +5,7 @@ type CreateTicket struct {
 	Content      string `json:"content"`
 	Status       int    `json:"status"`
 	Urgency      int    `json:"urgency"`
+	Impact       int    `json:"impact"`
 	DisableNotif bool   `json:"_disablenotif"`
 }
 
