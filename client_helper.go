@@ -72,7 +72,7 @@ type CreateTicketResponse struct {
 	Message string `json:"message"`
 }
 
-func getInputJson(ticket CreateTicket) ([]byte, error) {
+func getInputJson(ticket interface{}) ([]byte, error) {
 	inputItem := InputItem{Input: ticket}
 	inputJson, err := json.Marshal(inputItem)
 	if err != nil {

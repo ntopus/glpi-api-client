@@ -9,6 +9,12 @@ type CreateTicket struct {
 	DisableNotif bool   `json:"_disablenotif"`
 }
 
+type AddFollowupTicket struct {
+	IsPrivate      string `json:"is_private"`
+	RequestTypesId string `json:"requesttypes_id"`
+	Content        string `json:"content"`
+}
+
 type ReadTicket struct {
 	Id                       int    `json:"id"`
 	EntitiesId               int    `json:"entities_id"`

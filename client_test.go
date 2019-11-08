@@ -13,7 +13,7 @@ func Test_GLPI(t *testing.T) {
 	}
 	glpiClient := NewGLPIClient(GlpiClientConfig{
 		ApiEndpoint: *glpiEndpoint,
-		AppToken:    "WIwBdlGma6MbtXZJyBpcrPIF9OSzReAx368aKG1K",
+		AppToken:    "CPyc2169FpYjZXZNKjDg4woylV8hONVyNYGnP5B3",
 		AuthUser: AuthUserClient{
 			Username: "glpi",
 			Password: "glpi",
@@ -47,13 +47,10 @@ func Test_GLPI(t *testing.T) {
 		panic(err)
 	}
 	fmt.Println(*ticket)
-	err = glpiClient.AddFollowupTicket(1, CreateTicket{
-		Name:         "Test Ticket 2",
-		Content:      "Content test ticket.",
-		Status:       1,
-		Urgency:      1,
-		Impact:       1,
-		DisableNotif: true,
+	err = glpiClient.AddFollowupTicket(1, AddFollowupTicket{
+		IsPrivate:      "1",
+		RequestTypesId: "6",
+		Content:        "Followup Added with Golang!!!",
 	})
 	if err != nil {
 		panic(err)

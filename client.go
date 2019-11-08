@@ -94,7 +94,7 @@ func (glpiClient *GLPIClient) UpdateTicket(id int, ticket CreateTicket) error {
 	return nil
 }
 
-func (glpiClient *GLPIClient) AddFollowupTicket(id int, ticket CreateTicket) error {
+func (glpiClient *GLPIClient) AddFollowupTicket(id int, ticket AddFollowupTicket) error {
 	json, err := getInputJson(ticket)
 	if err != nil {
 		return err
